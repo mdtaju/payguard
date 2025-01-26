@@ -11,7 +11,7 @@ type UploadProps = {
   folder?: string;
 };
 
-export const uploadFile = async ({ file, bucket, folder }: UploadProps) => {
+export const uploadFile = async ({ file, bucket }: UploadProps) => {
   //   const fileName = file.name;
   //   const fileExtension = fileName.slice(fileName.lastIndexOf(".") + 1);
   //   const path = `${folder ? folder + "/" : ""}${uuidv4()}.${fileExtension}`;

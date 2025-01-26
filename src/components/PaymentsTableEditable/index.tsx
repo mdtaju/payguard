@@ -2,7 +2,7 @@
 // import { dateFormation } from "@/lib/dateFormation";
 import { PaymentType } from "@/types/allTypes";
 import type { TableProps } from "antd";
-import { DatePicker, Modal, Select, Table } from "antd";
+import { Modal, Select, Table } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 
@@ -11,8 +11,6 @@ import isSameOrBefore from "dayjs/plugin/isSameOrBefore"; // Import plugin
 
 dayjs.extend(isSameOrAfter); // Extend Day.js with the plugin
 dayjs.extend(isSameOrBefore); // Extend Day.js with the plugin
-
-const { RangePicker } = DatePicker;
 
 const PaymentsTableEditable = ({
   data,
@@ -28,7 +26,6 @@ const PaymentsTableEditable = ({
     user_id: "",
   });
   const [status, setStatus] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [paymentData, setPaymentData] = useState(data || []);
   //   const [filteredDates, setFilteredDates] = useState<[string, string] | null>(
@@ -61,9 +58,8 @@ const PaymentsTableEditable = ({
   };
 
   const handleOk = async () => {
-    setIsLoading(true);
     try {
-      const res = await fetch(
+      await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/payments/${selectedPaymentData.id}`,
         {
           method: "PUT",
@@ -78,8 +74,6 @@ const PaymentsTableEditable = ({
           }),
         }
       );
-      const data = await res.json();
-      console.log(data);
 
       setPaymentData((prevData) =>
         prevData.map((item) =>
@@ -89,8 +83,6 @@ const PaymentsTableEditable = ({
       setIsModalOpen(false);
     } catch {
       setError("Update failed");
-    } finally {
-      setIsLoading(false);
     }
   };
 

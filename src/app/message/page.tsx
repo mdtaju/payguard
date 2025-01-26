@@ -1,7 +1,7 @@
 const MessagePage = async ({
   searchParams,
 }: {
-  searchParams: { message: string };
+  searchParams: Promise<{ message: string }>;
 }) => {
   const { message } = await searchParams;
 

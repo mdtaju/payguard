@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authToken = req.headers.get("authorization")?.replace("Bearer ", "");
@@ -89,8 +89,7 @@ export async function PUT(
         { status: 400 }
       );
     }
-  } catch (error) {
-    console.log(error);
+  } catch {
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }

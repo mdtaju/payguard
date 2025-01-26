@@ -5,12 +5,12 @@ import { redirect } from "next/navigation";
 const PaymentSuccess = async ({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     title: string;
     amount: string;
     payment_intent: string;
     redirect_status: string;
-  };
+  }>;
 }) => {
   const { title, amount, payment_intent } = await searchParams;
   const user: AuthUser | null = await GetUser();

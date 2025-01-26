@@ -68,7 +68,7 @@ const DocumentsTableEditable = ({
 
   const handleOk = async () => {
     try {
-      const res = await fetch(
+      await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/documents/${selectedDocData.id}`,
         {
           method: "PUT",
@@ -83,8 +83,7 @@ const DocumentsTableEditable = ({
           }),
         }
       );
-      const data = await res.json();
-      console.log(data);
+      // const data = await res.json();
 
       setPaymentData((prevData) =>
         prevData.map((item) =>

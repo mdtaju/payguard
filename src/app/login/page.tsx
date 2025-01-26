@@ -7,7 +7,7 @@ import { createClient } from "../../utils/supabase/server";
 const LoginPage = async ({
   searchParams,
 }: {
-  searchParams: { message: string };
+  searchParams: Promise<{ message: string }>;
 }) => {
   const { message } = await searchParams;
   const user = await GetUser();
@@ -16,7 +16,6 @@ const LoginPage = async ({
 
   const signIn = async (formData: FormData) => {
     "use server";
-    console.log("action executed");
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const supabase = await createClient();

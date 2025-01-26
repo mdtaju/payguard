@@ -52,8 +52,6 @@ const UploadDocument = ({
       const { data, error } = await createSupabaseClient()
         .storage.from("payguard")
         .upload(filePath, file);
-      console.log(data);
-      console.log(error);
       if (error) {
         return messageApi.open({
           type: "error",
@@ -93,8 +91,7 @@ const UploadDocument = ({
           duration: 5,
         });
       }
-    } catch (error) {
-      console.log(error);
+    } catch {
       messageApi.open({
         type: "error",
         content: "Internal server error.",

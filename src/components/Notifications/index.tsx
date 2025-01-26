@@ -47,9 +47,7 @@ const Notifications = ({
         });
         return { ...prevData, data: updatedData };
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch {}
   };
 
   const handleMoreNotifications = async () => {
@@ -82,9 +80,7 @@ const Notifications = ({
           return { ...prevData, data: [...prevData.data, ...result.data] };
         });
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch {}
   };
   return (
     <div className="w-full max-w-[550px] py-6 px-4 mx-auto">

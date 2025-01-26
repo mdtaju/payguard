@@ -99,7 +99,6 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json({ error: `Database error` }, { status: 500 });
   } catch (error) {
-    console.error("Internal Error:", error);
     // Handle other errors (e.g., network issues, parsing errors)
     return NextResponse.json(
       { error: `Internal Server Error: ${error}` },

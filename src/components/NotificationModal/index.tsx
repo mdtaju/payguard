@@ -87,9 +87,7 @@ const NotificationsModal = ({
               setShowMoreNotifications(false);
             }
           }
-        } catch (error) {
-          console.log(error);
-        }
+        } catch {}
       }
       getNotifications();
     }
@@ -124,9 +122,7 @@ const NotificationsModal = ({
         });
         return { ...prevData, data: updatedData };
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch {}
   };
 
   const handleMoreNotifications = async () => {
@@ -159,9 +155,7 @@ const NotificationsModal = ({
           return { ...prevData, data: [...prevData.data, ...result.data] };
         });
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch {}
   };
 
   const content = (

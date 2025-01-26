@@ -11,7 +11,7 @@ import { createClient } from "../../utils/supabase/server";
 const SignupPage = async ({
   searchParams,
 }: {
-  searchParams: { message: string };
+  searchParams: Promise<{ message: string }>;
 }) => {
   const { message } = await searchParams;
   const user = await GetUser();
@@ -95,8 +95,7 @@ const SignupPage = async ({
       }
 
       redirectPath = `/dashboard`;
-    } catch (error) {
-      console.log(error);
+    } catch {
       redirectPath = `/message?message=Signup failed please try again.`;
     } finally {
       redirect(redirectPath);

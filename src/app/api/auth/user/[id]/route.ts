@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
@@ -31,7 +31,6 @@ export async function PUT(
     } else {
       user = await User.updateOne({ id }, { $set: { photo_url: file_url } });
     }
-    console.log(user);
     if (user?.modifiedCount) {
       return NextResponse.json(
         { message: "Data successfully updated", status: 200 },
@@ -44,7 +43,6 @@ export async function PUT(
       );
     }
   } catch (error) {
-    console.error("Internal Error:", error);
     // Handle other errors (e.g., network issues, parsing errors)
     return NextResponse.json(
       { error: `Internal Server Error: ${error}` },

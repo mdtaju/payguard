@@ -116,7 +116,6 @@ const Profile = ({
         throw new Error("Upload failed");
       }
     } catch (error) {
-      console.log(error);
       messageApi.open({
         type: "error",
         content: "Something went wrong. Please, try again",
