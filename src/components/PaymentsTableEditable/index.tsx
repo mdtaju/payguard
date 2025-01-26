@@ -22,7 +22,11 @@ const PaymentsTableEditable = ({
   token: string;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState("");
+  const [selectedPaymentData, setSelectedPaymentData] = useState({
+    title: "",
+    id: "",
+    user_id: "",
+  });
   const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -43,8 +47,16 @@ const PaymentsTableEditable = ({
   //     }
   //   };
 
-  const showModal = (id: string) => {
-    setSelectedId(id);
+  const showModal = ({
+    id,
+    title,
+    user_id,
+  }: {
+    id: string;
+    title: string;
+    user_id: string;
+  }) => {
+    setSelectedPaymentData({ id, title, user_id });
     setIsModalOpen(true);
   };
 
@@ -52,21 +64,26 @@ const PaymentsTableEditable = ({
     setIsLoading(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/payments/${selectedId}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/payments/${selectedPaymentData.id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
             authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ status }),
+          body: JSON.stringify({
+            status,
+            title: selectedPaymentData.title,
+            user_id: selectedPaymentData.user_id,
+          }),
         }
       );
       const data = await res.json();
       console.log(data);
+
       setPaymentData((prevData) =>
         prevData.map((item) =>
-          item._id === selectedId ? { ...item, status } : item
+          item._id === selectedPaymentData.id ? { ...item, status } : item
         )
       );
       setIsModalOpen(false);
@@ -116,7 +133,7 @@ const PaymentsTableEditable = ({
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (_, { status, _id }) => {
+      render: (_, { status, _id, title, user_id }) => {
         let style = "";
         switch (status) {
           case "pending":
@@ -134,7 +151,9 @@ const PaymentsTableEditable = ({
             <span className={style}>
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
-            <button aria-label="edit" onClick={() => showModal(_id)}>
+            <button
+              aria-label="edit"
+              onClick={() => showModal({ id: _id, title, user_id })}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

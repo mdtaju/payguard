@@ -22,9 +22,12 @@ const DocumentsTableEditable = ({
   token: string;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState("");
+  const [selectedDocData, setSelectedDocData] = useState({
+    title: "",
+    id: "",
+    user_id: "",
+  });
   const [status, setStatus] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [downloadLoading, setDownloadLoading] = useState(false);
   const [error, setError] = useState("");
   const [paymentData, setPaymentData] = useState(data || []);
@@ -50,37 +53,47 @@ const DocumentsTableEditable = ({
     }
   };
 
-  const showModal = (id: string) => {
-    setSelectedId(id);
+  const showModal = ({
+    id,
+    title,
+    user_id,
+  }: {
+    id: string;
+    title: string;
+    user_id: string;
+  }) => {
+    setSelectedDocData({ id, title, user_id });
     setIsModalOpen(true);
   };
 
   const handleOk = async () => {
-    setIsLoading(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/documents/${selectedId}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/documents/${selectedDocData.id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
             authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ status }),
+          body: JSON.stringify({
+            status,
+            title: selectedDocData.title,
+            user_id: selectedDocData.user_id,
+          }),
         }
       );
       const data = await res.json();
       console.log(data);
+
       setPaymentData((prevData) =>
         prevData.map((item) =>
-          item._id === selectedId ? { ...item, status } : item
+          item._id === selectedDocData.id ? { ...item, status } : item
         )
       );
       setIsModalOpen(false);
     } catch {
       setError("Update failed");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -142,7 +155,7 @@ const DocumentsTableEditable = ({
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (_, { status, _id }) => {
+      render: (_, { status, _id, title, user_id }) => {
         let style = "";
         switch (status) {
           case "pending":
@@ -160,7 +173,9 @@ const DocumentsTableEditable = ({
             <span className={style}>
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
-            <button aria-label="edit" onClick={() => showModal(_id)}>
+            <button
+              aria-label="edit"
+              onClick={() => showModal({ id: _id, title, user_id })}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

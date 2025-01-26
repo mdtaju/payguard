@@ -1,5 +1,6 @@
 import { createMongoConnection } from "@/config/mongodb";
 import { accessTokenCheck } from "@/lib/accessTokenCheck";
+import Notification from "@/models/notificationModal";
 import Payment from "@/models/paymentModel";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -55,8 +56,42 @@ export async function POST(request: NextRequest) {
 
     const payment = Response.json(res);
 
-    // redirecting to message page as successfully signup
     if (payment?.ok) {
+      // notification push
+      await Notification.insertMany([
+        {
+          message: `Payment $${amount} for "${title}" has been successful`,
+          user_id,
+          created_at: Date.now(),
+          role: "user",
+        },
+        {
+          message: `New payment $${amount} has been placed for "${title}"`,
+          user_id,
+          created_at: Date.now(),
+          role: "admin",
+        },
+      ]);
+
+      // initSocket.emit("notification", [
+      //   {
+      //     _id: notification[0]?._id,
+      //     user_id,
+      //     status: "unread",
+      //     message: `Payment $${amount} for "${title}" has been successful`,
+      //     role: "user",
+      //     created_at: Date.now(),
+      //   },
+      //   {
+      //     _id: notification[1]?._id,
+      //     user_id,
+      //     status: "unread",
+      //     message: `New payment $${amount} has been placed for "${title}"`,
+      //     role: "admin",
+      //     created_at: Date.now(),
+      //   },
+      // ]);
+
       return NextResponse.json(
         { message: `Data successfully stored`, status: 201 },
         { status: 201 }

@@ -1,6 +1,8 @@
 import { createMongoConnection } from "@/config/mongodb";
 import { accessTokenCheck } from "@/lib/accessTokenCheck";
 import Document from "@/models/documentModel";
+import Notification from "@/models/notificationModal";
+// import initSocket from "@/utils/socket";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -56,6 +58,40 @@ export async function POST(request: NextRequest) {
 
     // redirecting to message page as successfully signup
     if (document?.ok) {
+      await Notification.insertMany([
+        {
+          message: `Your document for "${title}" was successfully uploaded`,
+          user_id,
+          created_at: Date.now(),
+          role: "user",
+        },
+        {
+          message: `New document for "${title}" was successfully uploaded`,
+          user_id,
+          created_at: Date.now(),
+          role: "admin",
+        },
+      ]);
+
+      // initSocket.emit("notification", [
+      //   {
+      //     _id: notification[0]?._id,
+      //     user_id,
+      //     status: "unread",
+      //     message: `Your document for "${title}" was successfully uploaded`,
+      //     role: "user",
+      //     created_at: Date.now(),
+      //   },
+      //   {
+      //     _id: notification[1]?._id,
+      //     user_id,
+      //     status: "unread",
+      //     message: `New document for "${title}" was successfully uploaded`,
+      //     role: "admin",
+      //     created_at: Date.now(),
+      //   },
+      // ]);
+
       return NextResponse.json(
         { message: `Data successfully stored`, status: 201 },
         { status: 201 }

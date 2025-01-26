@@ -142,3 +142,62 @@ export const PrivateHeaderData: PrivateHeaderDataTypes[] = [
     ),
   },
 ];
+
+export const ProjectFeatures: {
+  slNo: number;
+  description: string;
+  bgColor: string;
+}[] = [
+  {
+    slNo: 1,
+    description:
+      "Highly Secure role based server side authentication with Supabase",
+    bgColor: "#4A5568",
+  },
+  {
+    slNo: 2,
+    description: "Payment gateway with Strip",
+    bgColor: "#6B705C",
+  },
+  {
+    slNo: 3,
+    description: "Document upload and download with Supabase storage",
+    bgColor: "#6D6875",
+  },
+  {
+    slNo: 4,
+    description: "Payment and Document status update by admin",
+    bgColor: "#343A40",
+  },
+  {
+    slNo: 5,
+    description: "Profile picture update with crop feature",
+    bgColor: "#556B57",
+  },
+  {
+    slNo: 6,
+    description: "Live notification push with Socket.io",
+    bgColor: "#7F6A93",
+  },
+  {
+    slNo: 7,
+    description: "Notification pagination and read status update",
+    bgColor: "#486581",
+  },
+  {
+    slNo: 8,
+    description:
+      "Secure API integration and data management with MongoDB and JWT",
+    bgColor: "#4C3A51",
+  },
+  {
+    slNo: 9,
+    description: "Fully responsive and cross-browser compatible design",
+    bgColor: "#778571",
+  },
+  {
+    slNo: 10,
+    description: "Type-safe, clean, and readable code",
+    bgColor: "#5A7184",
+  },
+];

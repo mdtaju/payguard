@@ -1,27 +1,43 @@
 import NotificationsModal from "@/components/NotificationModal";
 import { GetUser } from "@/serverActions/getUser";
-import { Avatar, Badge } from "antd";
+import { Avatar } from "antd";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "../../../utils/supabase/server";
+import { accessTokenMake } from "@/serverActions/accessToken";
 
 export const PublicHeader = async () => {
   const user = await GetUser();
 
+  let token;
+
+  if (user) {
+    token = accessTokenMake({
+      role: user?.user_metadata?.role,
+      id: user?.identities ? user?.identities[0]?.user_id : "",
+    });
+  } else {
+    token = "";
+  }
+
   const signOut = async () => {
     "use server";
+    let redirectPath = "/";
     try {
       const supabase = await createClient();
       await supabase.auth.signOut();
-      return redirect("/");
-    } catch {}
+      redirectPath = "/";
+    } catch {
+    } finally {
+      redirect(redirectPath);
+    }
   };
 
   return (
     <header className="w-full px-4 bg-primary sticky top-0 left-0 z-[100] ">
-      <div className="container mx-auto flex justify-end">
-        <div className="flex items-center justify-between w-full md:w-1/2">
-          <nav className="w-fit mx-auto py-4 flex-1">
+      <div className="container mx-auto flex justify-end md:justify-center">
+        <div className="flex items-center justify-between md:justify-center w-full md:w-1/2">
+          <nav className="max-w-fit mx-auto py-4 flex-1">
             <ul className="flex items-center gap-6 text-base text-white font-semibold">
               <li className="hover:text-accent transition-all">
                 <Link href={"/"}>Home</Link>
@@ -66,9 +82,10 @@ export const PublicHeader = async () => {
                   }
                 />
               </Link>
-              <Badge count={2}>
-                <NotificationsModal />
-              </Badge>
+              <NotificationsModal
+                token={token}
+                userId={user?.identities ? user?.identities[0]?.user_id : ""}
+              />
             </div>
           )}
         </div>

@@ -9,8 +9,8 @@ const DashboardPage = async () => {
 
   if (user.user_metadata.role === "admin") {
     return (
-      <div>
-        <h1>this is admin page</h1>
+      <div className="w-full py-6 text-center">
+        <h1 className="text-4xl font-semibold">Welcome to Dashboard</h1>
       </div>
     );
   } else {

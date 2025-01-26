@@ -43,6 +43,8 @@ const SignupPage = async ({
       return redirect("/signup?message=Passwords do not match");
     }
 
+    let redirectPath = "/";
+
     try {
       const hashedPassword = await bcrypt.hash(password as string, 10);
 
@@ -61,7 +63,8 @@ const SignupPage = async ({
 
       // supabase error
       if (error) {
-        return redirect(`/signup?message=${error.message}`);
+        redirectPath = `/signup?message=${error.message}`;
+        throw new Error(`${error.message}`);
       }
 
       await createMongoConnection(); // mondoDB connection
@@ -80,21 +83,23 @@ const SignupPage = async ({
       ]);
 
       const user = Response.json(res);
-
       // redirecting to message page as successfully signup
-      if (user?.ok) {
-        // return redirect(
-        //   `/message?message=Please, check your email to confirm your registration (If you do not recognize the confirmation email in your inbox. Please, check your spam emails)`
-        // );
-        return redirect(`/dashboard`);
+      if (!user?.ok) {
+        await supabase.auth.admin.deleteUser(data.user?.id as string);
+
+        // mongodb error
+        redirectPath = `/message?message=Signup failed please try again or use another email`;
+        throw new Error(
+          `/message?message=Signup failed please try again or use another email`
+        );
       }
 
-      // mongodb error
-      return redirect(
-        `/message?message=Signup failed please try again or use another email`
-      );
-    } catch {
-      return redirect(`/message?message=Signup failed please try again.`);
+      redirectPath = `/dashboard`;
+    } catch (error) {
+      console.log(error);
+      redirectPath = `/message?message=Signup failed please try again.`;
+    } finally {
+      redirect(redirectPath);
     }
   };
   return (

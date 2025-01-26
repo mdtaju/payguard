@@ -1,122 +1,167 @@
 "use client";
 import { dateFormation } from "@/lib/dateFormation";
-import { Popover } from "antd";
+import { NotificationType } from "@/types/allTypes";
+import { Badge, Popover } from "antd";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const notis = [
-  {
-    _id: "2er",
-    status: "unread",
-    user_id: "ii",
-    message: "Hello world",
-    created_at: "2025-01-14T07:13:01.792+00:00",
-  },
-  {
-    _id: "2er3",
-    status: "unread",
-    user_id: "ii",
-    message: "Hello world",
-    created_at: "2025-01-14T07:13:01.792+00:00",
-  },
-  {
-    _id: "2er4",
-    status: "read",
-    user_id: "ii",
-    message: "Hello world",
-    created_at: "2025-01-14T07:13:01.792+00:00",
-  },
-  {
-    _id: "2er6",
-    status: "unread",
-    user_id: "ii",
-    message: "Hello world",
-    created_at: "2025-01-14T07:13:01.792+00:00",
-  },
-  {
-    _id: "2er",
-    status: "unread",
-    user_id: "ii",
-    message: "Hello world",
-    created_at: "2025-01-14T07:13:01.792+00:00",
-  },
-  {
-    _id: "2er3",
-    status: "unread",
-    user_id: "ii",
-    message: "Hello world",
-    created_at: "2025-01-14T07:13:01.792+00:00",
-  },
-  {
-    _id: "2er4",
-    status: "read",
-    user_id: "ii",
-    message: "Hello world",
-    created_at: "2025-01-14T07:13:01.792+00:00",
-  },
-  {
-    _id: "2er6",
-    status: "unread",
-    user_id: "ii",
-    message: "Hello world",
-    created_at: "2025-01-14T07:13:01.792+00:00",
-  },
-  {
-    _id: "2er",
-    status: "unread",
-    user_id: "ii",
-    message: "Hello world",
-    created_at: "2025-01-14T07:13:01.792+00:00",
-  },
-  {
-    _id: "2er3",
-    status: "unread",
-    user_id: "ii",
-    message: "Hello world",
-    created_at: "2025-01-14T07:13:01.792+00:00",
-  },
-  {
-    _id: "2er4",
-    status: "read",
-    user_id: "ii",
-    message: "Hello world",
-    created_at: "2025-01-14T07:13:01.792+00:00",
-  },
-  {
-    _id: "2er6",
-    status: "unread",
-    user_id: "ii",
-    message: "Hello world",
-    created_at: "2025-01-14T07:13:01.792+00:00",
-  },
-];
-
-const NotificationsModal = () => {
+const NotificationsModal = ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [data, setData] = useState(notis);
+  const [data, setData] = useState<{
+    data: NotificationType[];
+    totalCount: number;
+  }>({
+    data: [],
+    totalCount: 0,
+  });
+  const [showMoreNotification, setShowMoreNotifications] = useState(true);
+  const pathname = usePathname();
+
+  // useEffect(() => {
+  //   initSocket?.connect();
+  //   if (initSocket.connected) {
+  //     initSocket.on("notification", (notifications: NotificationType[]) => {
+  //       console.log(notifications);
+  //       notifications.map((notification) => {
+  //         if (notification.user_id === userId && notification.role === "user") {
+  //           setData((prevNotifications) => [
+  //             notification,
+  //             ...prevNotifications,
+  //           ]);
+  //           return notification;
+  //         } else if (notification.role === "admin") {
+  //           setData((prevNotifications) => [
+  //             notification,
+  //             ...prevNotifications,
+  //           ]);
+  //           return notification;
+  //         } else {
+  //           return notification;
+  //         }
+  //       });
+  //     });
+  //   }
+
+  //   return () => {
+  //     initSocket?.disconnect();
+  //   };
+  // }, [userId]);
 
   useEffect(() => {
     document.documentElement.scrollTop = document.documentElement.clientHeight;
     document.documentElement.scrollLeft = document.documentElement.clientWidth;
   }, []);
 
+  useEffect(() => {
+    if (pathname !== "/dashboard/notifications") {
+      async function getNotifications() {
+        try {
+          const serverResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/notifications/${userId}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                startIndex: 0,
+                totalDataCount: 10,
+              }),
+            }
+          );
+          // if successfully save payment data to database
+          const res = await serverResponse.json();
+          const result: { data: NotificationType[]; totalCount: number } =
+            res.result;
+          if (result?.data) {
+            setData(result);
+            if (result?.data.length >= result.totalCount) {
+              setShowMoreNotifications(false);
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      getNotifications();
+    }
+  }, [pathname, userId, token]);
+
   const handleClickChange = (open: boolean) => {
     setModalOpen(open);
   };
 
-  const handleMarkAsRead = (id: string) => {
-    setData((prevData) =>
-      prevData.map((item) => {
-        if (id === item._id) {
-          return {
-            ...item,
-            status: "read",
-          };
-        } else {
-          return item;
+  const handleMarkAsRead = async (id: string) => {
+    try {
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/notifications/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
         }
-      })
-    );
+      );
+      setData((prevData) => {
+        const updatedData = prevData.data.map((item) => {
+          if (id === item._id) {
+            return {
+              ...item,
+              status: "read",
+            };
+          } else {
+            return item;
+          }
+        });
+        return { ...prevData, data: updatedData };
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleMoreNotifications = async () => {
+    const startIndex = data.data.length;
+    if (data.data.length >= data.totalCount) {
+      return setShowMoreNotifications(false);
+    }
+
+    try {
+      const serverResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/notifications/${userId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            startIndex: startIndex,
+            totalDataCount: 10,
+          }),
+        }
+      );
+      // if successfully save payment data to database
+      const res = await serverResponse.json();
+      const result: { data: NotificationType[]; totalCount: number } =
+        res.result;
+      if (result?.data) {
+        setData((prevData) => {
+          return { ...prevData, data: [...prevData.data, ...result.data] };
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const content = (
@@ -131,7 +176,7 @@ const NotificationsModal = () => {
         </Link>
       </div>
       <ul className="space-y-3 mt-4">
-        {data.map((item, i) => (
+        {data.data.map((item, i) => (
           <li
             key={i}
             className={`flex items-start gap-3 p-2  ${
@@ -170,32 +215,65 @@ const NotificationsModal = () => {
           </li>
         ))}
       </ul>
+      {/* more button */}
+      {pathname !== "/dashboard/notifications" ? (
+        <>
+          {showMoreNotification && (
+            <div className="w-full mt-4 grid place-items-center">
+              <button
+                onClick={handleMoreNotifications}
+                className="btn text-xs px-5 py-1 font-semibold flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-4">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                  />
+                </svg>
+                <span>load more</span>
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <p className="text-center mt-6 text-sm font-semibold">
+          Please see on notifications page
+        </p>
+      )}
     </div>
   );
 
   return (
-    <Popover
-      overlayClassName="w-full max-w-[350px]"
-      content={content}
-      open={modalOpen}
-      trigger={"click"}
-      onOpenChange={handleClickChange}>
-      <button className="p-0.5 text-white" onClick={() => setModalOpen(true)}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="size-6">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
-          />
-        </svg>
-      </button>
-    </Popover>
+    <Badge count={data.data.filter((item) => item.status === "unread").length}>
+      <Popover
+        overlayClassName="w-full max-w-[350px]"
+        content={content}
+        open={modalOpen}
+        trigger={"click"}
+        onOpenChange={handleClickChange}>
+        <button className="p-0.5 text-white" onClick={() => setModalOpen(true)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+            />
+          </svg>
+        </button>
+      </Popover>
+    </Badge>
   );
 };
 

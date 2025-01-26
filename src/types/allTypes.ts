@@ -70,5 +70,6 @@ export type NotificationType = {
   user_id: string;
   message: string;
   created_at: string;
+  role: string;
   __v: number;
 };

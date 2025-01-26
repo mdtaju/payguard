@@ -1,3 +1,4 @@
+import { ProjectFeatures } from "@/db/data";
 import { GetUser } from "@/serverActions/getUser";
 import Link from "next/link";
 
@@ -34,6 +35,24 @@ export default async function Home() {
           </div>
         )}
       </div>
+      {/* features start */}
+      <div className="container mx-auto mt-8 md:mt-[80px]">
+        <h1 className="text-center text-2xl md:text-3xl font-semibold">
+          Project Features
+        </h1>
+        <div className="mt-4 md:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {ProjectFeatures.map((feature, i) => (
+            <div
+              key={i}
+              className="p-4 md:px-4 py-8 rounded-md text-secondary custom_shadow text-center"
+              style={{ background: feature.bgColor }}>
+              <h2 className="text-2xl md:text-4xl font-bold">{feature.slNo}</h2>
+              <p className="text-lg font-medium mt-4">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* features end */}
     </main>
   );
 }

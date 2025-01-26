@@ -5,6 +5,7 @@ interface INotification extends Document {
   message: string;
   status: string;
   created_at: Date;
+  role: string;
 }
 
 const useNotification = new mongoose.Schema<INotification>({
@@ -15,6 +16,10 @@ const useNotification = new mongoose.Schema<INotification>({
   status: {
     type: String,
     default: "unread",
+  },
+  role: {
+    type: String,
+    require: true,
   },
   user_id: {
     type: String,
