@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "../../utils/supabase/server";
+export const dynamic = "force-dynamic";
 
 const SignupPage = async ({
   searchParams,

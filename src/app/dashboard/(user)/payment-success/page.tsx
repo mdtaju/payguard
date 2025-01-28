@@ -1,6 +1,7 @@
 import { GetUser } from "@/serverActions/getUser";
 import { AuthUser } from "@/types/allTypes";
 import { redirect } from "next/navigation";
+export const dynamic = "force-dynamic";
 
 const PaymentSuccess = async ({
   searchParams,

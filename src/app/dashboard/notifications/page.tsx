@@ -3,10 +3,11 @@ import { accessTokenMake } from "@/serverActions/accessToken";
 import { GetUser } from "@/serverActions/getUser";
 import { AuthUser, NotificationType } from "@/types/allTypes";
 import { redirect } from "next/navigation";
+export const dynamic = "force-dynamic";
 
 const NotificationsPage = async () => {
   const user: AuthUser | null = await GetUser();
-  if (!user) redirect("/dashboard");
+  if (user === null) redirect("/login");
 
   const token = accessTokenMake({
     role: user?.user_metadata ? user?.user_metadata?.role : "user",

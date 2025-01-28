@@ -3,6 +3,7 @@ import { accessTokenMake } from "@/serverActions/accessToken";
 import { GetUser } from "@/serverActions/getUser";
 import { AuthUser, DocumentType } from "@/types/allTypes";
 import { redirect } from "next/navigation";
+export const dynamic = "force-dynamic";
 
 const AllDocumentsPage = async () => {
   const user: AuthUser | null = await GetUser();

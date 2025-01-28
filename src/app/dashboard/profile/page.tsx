@@ -3,10 +3,12 @@ import { accessTokenMake } from "@/serverActions/accessToken";
 import { GetUser } from "@/serverActions/getUser";
 import { AuthUser } from "@/types/allTypes";
 import { redirect } from "next/navigation";
+export const dynamic = "force-dynamic";
 
 const ProfilePage = async () => {
   const user: AuthUser | null = await GetUser();
-  if (!user) redirect("/");
+
+  if (user === null) redirect("/");
 
   const token = accessTokenMake({
     role: "user",

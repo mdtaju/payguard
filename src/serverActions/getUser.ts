@@ -1,4 +1,4 @@
-"use server";
+// "use server";
 
 import { AuthUser } from "@/types/allTypes";
 
@@ -6,7 +6,7 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function GetUser() {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
     const { data } = await supabase.auth.getUser();
     if (data.user) {
       return data.user as AuthUser;

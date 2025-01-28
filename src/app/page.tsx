@@ -1,6 +1,7 @@
 import { ProjectFeatures } from "@/db/data";
 import { GetUser } from "@/serverActions/getUser";
 import Link from "next/link";
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const user = await GetUser();

@@ -3,11 +3,11 @@ import { GetUser } from "@/serverActions/getUser";
 import { AuthUser } from "@/types/allTypes";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
+export const dynamic = "force-dynamic";
 
 const DashboardLayout = async ({ children }: { children: ReactNode }) => {
   const user: AuthUser | null = await GetUser();
-
-  if (!user) redirect("/login");
+  if (user === null) redirect("/login");
 
   return (
     <div>

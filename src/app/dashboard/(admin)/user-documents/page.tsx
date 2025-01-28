@@ -4,6 +4,7 @@ import { GetUser } from "@/serverActions/getUser";
 import { AuthUser, DocumentType } from "@/types/allTypes";
 import "@ant-design/v5-patch-for-react-19";
 import { redirect } from "next/navigation";
+export const dynamic = "force-dynamic";
 
 const UserDocumentsPage = async () => {
   const user: AuthUser | null = await GetUser();

@@ -3,6 +3,7 @@ import Input from "@/components/Input";
 import { GetUser } from "@/serverActions/getUser";
 import { redirect } from "next/navigation";
 import { createClient } from "../../utils/supabase/server";
+export const dynamic = "force-dynamic";
 
 const LoginPage = async ({
   searchParams,
