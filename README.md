@@ -25,7 +25,7 @@ PayGuard is a full-stack payment management system designed for secure transacti
 - **Storage:** Supabase Storage
 
 ## 🌐 Live Demo
-🔗 [Live Project]([(https://payguard.vercel.app/)](https://payguard.vercel.app/))  
+🔗 [Live Project](https://payguard.vercel.app/)
 
 ### 🧑‍💻 Demo Credentials
 #### Admin:
@@ -48,7 +48,7 @@ Ensure you have the following installed:
 ### 🔧 Setup
 1. **Clone the repository**
    ```sh
-   git clone [(https://github.com/mdtaju/payguard.git)](https://github.com/mdtaju/payguard.git)
+   git clone [https://github.com/mdtaju/payguard.git](https://github.com/mdtaju/payguard.git)
    cd payguard
    ```
 2. **Install dependencies**
@@ -58,11 +58,16 @@ Ensure you have the following installed:
 3. **Set up environment variables**
    Create a `.env.local` file in the root directory and add the required environment variables:
    ```sh
-   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-   DATABASE_URL=your-mongodb-connection-string
-   JWT_SECRET=your-secret-key
-   STRIPE_SECRET_KEY=your-stripe-secret-key
+   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+   STRIPE_SECRET_KEY=
+   NEXT_PUBLIC_SUPABASE_PUBLIC_KEY=
+   NEXT_PUBLIC_SUPABASE_DATABASE_URI=
+   NEXT_PUBLIC_SUPABASE_STORAGE_ENDPOINT=
+   MONGODB_URI=
+   NEXT_PUBLIC_BASE_URL=
+   NEXT_PUBLIC_HOST_NAME=
+   NEXT_PUBLIC_PORT=
+   NEXT_PUBLIC_JWT_SECRET=
    ```
 4. **Run the development server**
    ```sh
